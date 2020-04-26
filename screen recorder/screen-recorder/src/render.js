@@ -55,6 +55,10 @@ async function getVideoSources() {
 async function selectSource(source) {
     videoSelectBtn.innerText = source.name
 
+
+
+    //with audio set to false I can record and save video with no problem, however, when I include audio I get echo. 
+    //Audio won't work on Mac machines due to OS restricitons.
     const constraints = {
         // audio: false,
         audio: {
