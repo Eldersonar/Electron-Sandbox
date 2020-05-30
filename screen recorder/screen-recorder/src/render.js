@@ -59,28 +59,68 @@ async function selectSource(source) {
 
     //with audio set to false I can record and save video with no problem, however, when I include audio I get echo. 
     //Audio won't work on Mac machines due to OS restricitons.
-    const constraints = {
-        // audio: false,
+    // const constraints = {
+    //     // audio: true,
+    //     audio: {
+    //         mandatory: {
+    //             chromeMediaSource: 'desktop',
+    //         }
+    //     },
+    //     video: {
+    //         mandatory: {
+    //             chromeMediaSource: 'desktop',
+    //             // chromeMediaSourceId: source.id
+    //         }
+    //     }
+    // }
+
+    let constraints = {
         audio: {
             mandatory: {
-                echoCancellation: true, // doesn't do the work
                 chromeMediaSource: 'desktop',
             }
+
+            // deviceId: "default"
+            // mandatory: {
+            //     chromeMediaSource: '',
+            // },
+            // mandatory: {
+            //     // echoCancellation: true,
+            //     // deviceId: "default",
+            //     // latency: false
+            // }
         },
+        // audio: true,
         video: {
             mandatory: {
                 chromeMediaSource: 'desktop',
-                // chromeMediaSourceId: source.id
+                chromeMediaSourceId: source.id
             }
         }
+        // video: true
     }
 
+    console.log(await desktopCapturer.getSources({
+        types: ['window']
+    }));
+
     // Create a Stream
-    const stream = await navigator.mediaDevices
-        .getUserMedia(constraints)
+    let stream
+    try {
+        stream = await navigator.mediaDevices
+            .getUserMedia(constraints)
+    } catch (e) {
+        console.log(e)
+        console.log('nothing')
+    }
+
+
+    console.log(navigator.mediaDevices.enumerateDevices());
+    console.log(navigator.mediaDevices.getSupportedConstraints())
 
     // Preview the source in a video element
     videoElement.srcObject = stream
+    videoElement.muted = true
     videoElement.play()
 
     //Create the Media Recorder
