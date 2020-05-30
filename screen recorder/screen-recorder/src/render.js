@@ -75,21 +75,21 @@ async function selectSource(source) {
     // }
 
     let constraints = {
-        audio: {
-            mandatory: {
-                chromeMediaSource: 'desktop',
-            }
+        // audio: {
+        //     mandatory: {
+        //         chromeMediaSource: 'desktop',
+        //     }
 
-            // deviceId: "default"
-            // mandatory: {
-            //     chromeMediaSource: '',
-            // },
-            // mandatory: {
-            //     // echoCancellation: true,
-            //     // deviceId: "default",
-            //     // latency: false
-            // }
-        },
+        //     // deviceId: "default"
+        //     // mandatory: {
+        //     //     chromeMediaSource: '',
+        //     // },
+        //     // mandatory: {
+        //     //     // echoCancellation: true,
+        //     //     // deviceId: "default",
+        //     //     // latency: false
+        //     // }
+        // },
         // audio: true,
         video: {
             mandatory: {
@@ -115,6 +115,13 @@ async function selectSource(source) {
     }
 
 
+    const streamAudio = await navigator.mediaDevices.getUserMedia({
+        audio: {
+            true
+        }
+    })
+
+
     console.log(navigator.mediaDevices.enumerateDevices());
     console.log(navigator.mediaDevices.getSupportedConstraints())
 
@@ -127,7 +134,9 @@ async function selectSource(source) {
     const options = {
         mimeType: 'video/webm; codecs=vp9'
     }
-    mediaRecorder = new MediaRecorder(stream, options)
+
+    const videoAudioStream = new MediaStream([...stream.getVideoTracks(), ...streamAudio.getAudioTracks()])
+    mediaRecorder = new MediaRecorder(videoAudioStream, options)
 
     //Register event handlers
     mediaRecorder.ondataavailable = handleDataAvailable
